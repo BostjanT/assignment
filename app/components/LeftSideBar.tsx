@@ -1,5 +1,7 @@
 import React from 'react'
 import { steps } from './MultiStepForm'
+import Image from 'next/image'
+import billboard from '../../public/billboard.png'
 
 type LeftMenuProps = {
     currentStep: number
@@ -84,6 +86,7 @@ const LeftSideBar = ({ currentStep }: LeftMenuProps) => {
                         <div className='mt-8'>
                             <p className='text-slate-300'>Start your company in minutes</p>
                         </div>
+                        <Image src={billboard} alt={''} className='mb-2 ml-auto mt-12 h-60 w-40' />
                     </div>
                 )}
             </nav>

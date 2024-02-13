@@ -1,8 +1,9 @@
+import MultiStepForm from './components/MultiStepForm'
 
 export default function Home() {
-  return (
-    <main className="flex h-screen items-center justify-center">
-      <h1>Hello</h1>
-    </main>
-  );
+    return (
+        <main className='flex h-screen items-center justify-center'>
+            <MultiStepForm />
+        </main>
+    )
 }

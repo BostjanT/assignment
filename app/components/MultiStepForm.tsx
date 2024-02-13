@@ -1,8 +1,10 @@
+'use client'
 import React, { useState } from 'react'
 import { FormDataSchema } from './schema'
 import { useForm, useFieldArray, SubmitHandler } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import LeftSideBar from './LeftSideBar'
 
 type Inputs = z.infer<typeof FormDataSchema>
 type FieldName = keyof Inputs
@@ -37,6 +39,7 @@ const MultiStepForm = () => {
         reset,
         trigger,
         control,
+        getValues,
         formState: { errors },
     } = useForm<Inputs>({ resolver: zodResolver(FormDataSchema) })
 
@@ -46,7 +49,7 @@ const MultiStepForm = () => {
     })
 
     const processForm: SubmitHandler<Inputs> = (data) => {
-        console.log(data)
+        console.log('Form submitted', data)
         reset()
     }
 
@@ -69,7 +72,56 @@ const MultiStepForm = () => {
         }
     }
 
-    return <div>MultiStepForm</div>
+    return (
+        <section className='relative mx-auto grid min-h-80 w-full grid-cols-4'>
+            <LeftSideBar currentStep={currentStep} />
+            {/*part for form */}
+            <div className='col-span-3 flex items-center justify-center bg-slate-200'>
+                <div className='w-2/>3'>
+                    <form onSubmit={handleSubmit(processForm)} className='my-12'>
+                        {currentStep === 0 && (
+                            <div>
+                                <h1 className='mb-6 text-3xl font-semibold leading-6 text-gray-900'>
+                                    Start your business now
+                                </h1>
+                                <p className='tracing-wider text-gray-500'>
+                                    Creating your company in US is just few steps away
+                                </p>
+                                <p className='mb-8 tracking-wider text-gray-500'>
+                                    Enter your email address to continue
+                                </p>
+                                <div>
+                                    <label htmlFor='email'>Enter email</label>
+                                    <div className='relative flex flex-col justify-center'>
+                                        <div className='flex gap-3 '>
+                                            <input
+                                                type='email'
+                                                id='email'
+                                                {...register('email')}
+                                                className='input w-2/3'
+                                            />
+
+                                            <button
+                                                type='submit'
+                                                onClick={next}
+                                                className='w-1/4 rounded-lg  bg-blue-700  text-sm font-medium text-white hover:bg-blue-800 focus:ring-2 focus:ring-blue-300'>
+                                                Get started
+                                            </button>
+                                        </div>
+                                        {errors.email?.message && (
+                                            <p className='absolute top-12 text-sm text-red-400'>
+                                                {errors.email.message}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </form>
+                </div>
+            </div>
+        </section>
+    )
 }
 
 export default MultiStepForm

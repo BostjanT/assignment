@@ -2,12 +2,13 @@
 import React, { useState } from 'react'
 import { FormDataSchema } from './schema'
 import { useForm, useFieldArray, SubmitHandler } from 'react-hook-form'
-import { z } from 'zod'
+import { ZodError, z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import LeftSideBar from './LeftSideBar'
 import FormButtons from './FormButtons'
+import FirstStep from '../forms/FirstStep'
 
-type Inputs = z.infer<typeof FormDataSchema>
+export type Inputs = z.infer<typeof FormDataSchema>
 type FieldName = keyof Inputs
 export const steps = [
     {
@@ -59,6 +60,26 @@ const MultiStepForm = () => {
         reset()
     }
 
+    function validateStep(): boolean {
+        let stepHasErrors = false
+        const fields = steps[currentStep]
+        for (let index = 0; index < steps.length; index++) {
+            const key = steps[currentStep][index]
+            try {
+                FormDataSchema[key].parse(formData[key].value)
+            } catch (error) {
+                if (error instanceof ZodError) {
+                    error.errors.forEach((err) => {
+                        if (key && key in formData) {
+                            stepHasErrors = true
+                        }
+                    })
+                }
+            }
+        }
+        return stepHasErrors ? false : true
+    }
+
     const next = async () => {
         const fields = steps[currentStep].fields
         const output = await trigger(fields as FieldName[], { shouldFocus: true })
@@ -86,7 +107,7 @@ const MultiStepForm = () => {
                 <div className='w-2/>3'>
                     <form onSubmit={handleSubmit(processForm)} className='my-12'>
                         {currentStep === 0 && (
-                            <div>
+                            /*  <div>
                                 <h1 className='mb-6 text-3xl font-semibold leading-6 text-gray-900'>
                                     Start your business now
                                 </h1>
@@ -121,7 +142,8 @@ const MultiStepForm = () => {
                                         )}
                                     </div>
                                 </div>
-                            </div>
+                            </div> */
+                            <FirstStep useForm={useForm} next={next} />
                         )}
                         {currentStep === 1 && (
                             <div>
@@ -141,7 +163,7 @@ const MultiStepForm = () => {
                                             id='llc'
                                             className='peer hidden'
                                             value={'llc'}
-                                            {...register('llcOrCompany')}
+                                            {...register('llcOrCompany', { required: true })}
                                         />
                                         <label
                                             htmlFor='llc'
@@ -190,7 +212,7 @@ const MultiStepForm = () => {
                                             value='company'
                                             id='company'
                                             className='peer hidden'
-                                            {...register('llcOrCompany')}
+                                            {...register('llcOrCompany', { required: true })}
                                         />
                                         <label
                                             htmlFor='company'

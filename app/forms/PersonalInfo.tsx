@@ -1,18 +1,20 @@
 import React from 'react'
-import { Inputs } from '../components/MultiStepForm'
-import { FormDataSchema } from '../components/schema'
-import { zodResolver } from '@hookform/resolvers/zod'
+
+import { UseFormRegister } from 'react-hook-form'
 
 type FirstAepProps = {
-    useForm: any
+    register: UseFormRegister<{
+        email: string
+        llcOrCompany: 'llc' | 'company'
+        directors: {
+            firstName: string
+            lastName: string
+        }[]
+    }>
     next: () => void
+    errorMessage: string | undefined
 }
-const FirstStep = ({ useForm, next }: FirstAepProps) => {
-    const {
-        register,
-        formState: { errors },
-    } = useForm<Inputs>({ resolver: zodResolver(FormDataSchema) })
-
+const PersonalStep = ({ register, errorMessage, next }: FirstAepProps) => {
     return (
         <div>
             <h1 className='mb-6 text-3xl font-semibold leading-6 text-gray-900'>
@@ -39,10 +41,8 @@ const FirstStep = ({ useForm, next }: FirstAepProps) => {
                             Get started
                         </button>
                     </div>
-                    {errors.email?.message && (
-                        <p className='absolute top-12 text-sm text-red-400'>
-                            {errors.email.message}
-                        </p>
+                    {errorMessage && (
+                        <p className='absolute top-12 text-sm text-red-400'>{errorMessage}</p>
                     )}
                 </div>
             </div>
@@ -50,4 +50,4 @@ const FirstStep = ({ useForm, next }: FirstAepProps) => {
     )
 }
 
-export default FirstStep
+export default PersonalStep

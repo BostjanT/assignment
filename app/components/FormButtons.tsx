@@ -15,7 +15,7 @@ const FormButtons = ({ currentStep, prev, next, steps }: FormButtonProps) => {
                     PREVIOUS STEP
                 </button>
             )}
-            {currentStep >= 1 && currentStep < steps.length - 1 && (
+            {currentStep > 1 && currentStep < steps.length - 1 && (
                 <button
                     type='submit'
                     className='rounded-xs ml-auto flex items-center gap-1 bg-blue-700 px-4 py-1  text-sm font-medium text-white hover:bg-blue-800 focus:ring-2 focus:ring-blue-300'
